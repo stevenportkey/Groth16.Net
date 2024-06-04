@@ -1,0 +1,72 @@
+using System;
+using System.ComponentModel;
+using Newtonsoft.Json;
+
+namespace Groth16.Net.Tests;
+
+public class ProvingOutput
+{
+    public ProvingOutput(IList<string> publicInputs, string proof)
+    {
+        PublicInputs = publicInputs;
+        Proof = proof;
+    }
+
+    [JsonProperty("public_inputs")] public IList<string> PublicInputs { get; set; }
+
+    [JsonProperty("proof")] public string Proof { get; set; }
+
+    public static ProvingOutput FromJsonString(string jsonString)
+    {
+        return JsonConvert.DeserializeObject<ProvingOutput>(jsonString);
+    }
+}
+
+public class Groth16Tests
+{
+    private IDictionary<string, IList<string>> ProvingInput = new Dictionary<string, IList<string>>()
+    {
+        {
+            "a", new List<string>
+            {
+                "3"
+            }
+        },
+        {
+            "b", new List<string>
+            {
+                "11"
+            }
+        }
+    };
+
+    string ExpectedInputString = "{\"a\":[\"3\"],\"b\":[\"11\"]}";
+
+    [Fact]
+    public void Test_InputSerialization()
+    {
+        var inputString = ProvingInput.ToJsonString();
+        Assert.Equal(ExpectedInputString, inputString);
+    }
+
+    [Fact]
+    public void Test_ProveAndVerify()
+    {
+        var wasmPath = "../../../data-files/multiplier2.wasm";
+        var r1csPath = "../../../data-files/multiplier2.r1cs";
+        var zkeyPath = "../../../data-files/multiplier2_0001.zkey";
+        using var prover = Prover.Create(wasmPath, r1csPath, zkeyPath);
+
+        var provingOutputString = prover.ProveBn254(ProvingInput);
+        var provingOutput = ParseProvingOutput(provingOutputString);
+        var verified = Verifier.VerifyBn254(prover.ExportVerifyingKeyBn254(), provingOutput.PublicInputs,
+            provingOutput.Proof);
+        Assert.True(verified);
+    }
+
+    private static ProvingOutput ParseProvingOutput(string provingOutput)
+    {
+        var provingOutputObj = JsonConvert.DeserializeObject<ProvingOutput>(provingOutput);
+        return provingOutputObj;
+    }
+}
