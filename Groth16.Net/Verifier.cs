@@ -7,7 +7,7 @@ namespace Groth16.Net
 {
     internal class InternalProvingOutput
     {
-        public InternalProvingOutput(IList<string> publicInputs, string proof)
+        public InternalProvingOutput(IList<string> publicInputs, RapidSnarkProof proof)
         {
             PublicInputs = publicInputs;
             Proof = proof;
@@ -15,11 +15,11 @@ namespace Groth16.Net
 
         private IList<string> PublicInputs { get; set; }
 
-        private string Proof { get; set; }
+        private RapidSnarkProof Proof { get; set; }
 
         public string ToJsonString()
         {
-            return $"{{\"public_inputs\":{PublicInputs.ToJsonString()},\"proof\":\"{Proof}\"}}";
+            return $"{{\"public_inputs\":{PublicInputs.ToJsonString()},\"proof\":{Proof.ToJsonString()}}}";
         }
     }
 
@@ -28,7 +28,7 @@ namespace Groth16.Net
         static readonly Lazy<groth16_verify_bn254> groth16_verify_bn254
             = LazyDelegate<groth16_verify_bn254>(nameof(groth16_verify_bn254));
 
-        public static bool VerifyBn254(string verifyingKey, IList<string> publicInputs, string proof)
+        public static bool VerifyBn254(string verifyingKey, IList<string> publicInputs, RapidSnarkProof proof)
         {
             var provingOutput = new InternalProvingOutput(publicInputs, proof).ToJsonString();
             Span<byte> inputInBytes = Encoding.ASCII.GetBytes(verifyingKey);

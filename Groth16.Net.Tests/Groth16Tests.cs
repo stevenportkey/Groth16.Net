@@ -1,12 +1,17 @@
-using System;
-using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace Groth16.Net.Tests;
 
+public class RapidSnarkProofAdaptor
+{
+    [JsonProperty("pi_a")] public List<string> PiA { get; set; }
+    [JsonProperty("pi_b")] public List<List<string>> PiB { get; set; }
+    [JsonProperty("pi_c")] public List<string> PiC { get; set; }
+}
+
 public class ProvingOutput
 {
-    public ProvingOutput(IList<string> publicInputs, string proof)
+    public ProvingOutput(IList<string> publicInputs, RapidSnarkProofAdaptor proof)
     {
         PublicInputs = publicInputs;
         Proof = proof;
@@ -14,7 +19,7 @@ public class ProvingOutput
 
     [JsonProperty("public_inputs")] public IList<string> PublicInputs { get; set; }
 
-    [JsonProperty("proof")] public string Proof { get; set; }
+    [JsonProperty("proof")] public RapidSnarkProofAdaptor Proof { get; set; }
 
     public static ProvingOutput FromJsonString(string jsonString)
     {
@@ -60,7 +65,12 @@ public class Groth16Tests
         var provingOutputString = prover.ProveBn254(ProvingInput);
         var provingOutput = ParseProvingOutput(provingOutputString);
         var verified = Verifier.VerifyBn254(prover.ExportVerifyingKeyBn254(), provingOutput.PublicInputs,
-            provingOutput.Proof);
+            new RapidSnarkProof
+            {
+                PiA = provingOutput.Proof.PiA,
+                PiB = provingOutput.Proof.PiB,
+                PiC = provingOutput.Proof.PiC
+            });
         Assert.True(verified);
     }
 

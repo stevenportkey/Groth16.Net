@@ -17,5 +17,10 @@ namespace Groth16.Net
         {
             return "[" + string.Join(",", values.Select(x => $"\"{x}\"")) + "]";
         }
+
+        internal static string ToJsonString(this IList<List<string>> values)
+        {
+            return "[" + string.Join(",", values.Select(x => x.ToJsonString())) + "]";
+        }
     }
 }
