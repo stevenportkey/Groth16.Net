@@ -24,8 +24,8 @@
             <_PackageFiles Include="$(OutputPath)/native/**/*">
                 <BuildAction>Content</BuildAction>
                 <PackagePath>content/native/</PackagePath>
-                <!--<CopyToOutput>true</CopyToOutput>-->
-                <!--<PackageCopyToOutput>true</PackageCopyToOutput>-->
+                <CopyToOutput>true</CopyToOutput>
+                <PackageCopyToOutput>true</PackageCopyToOutput>
             </_PackageFiles>
         </ItemGroup>
     </Target>
