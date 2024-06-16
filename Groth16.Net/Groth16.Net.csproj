@@ -24,9 +24,16 @@
             <_PackageFiles Include="$(OutputPath)/native/**/*">
                 <BuildAction>Content</BuildAction>
                 <PackagePath>content/native/</PackagePath>
-                <CopyToOutput>true</CopyToOutput>
-                <PackageCopyToOutput>true</PackageCopyToOutput>
+                <!--                <CopyToOutput>true</CopyToOutput>-->
+                <!--                <PackageCopyToOutput>true</PackageCopyToOutput>-->
             </_PackageFiles>
         </ItemGroup>
     </Target>
+
+    <ItemGroup>
+        <_PackageFiles Include="Groth16.Net.targets">
+            <BuildAction>None</BuildAction>
+            <PackagePath>build/</PackagePath>
+        </_PackageFiles>
+    </ItemGroup>
 </Project>

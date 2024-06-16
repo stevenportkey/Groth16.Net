@@ -1,0 +1,14 @@
+<Project>
+
+    <PropertyGroup>
+        <Groth16NativeLibDirectory>$(MSBuildThisFileDirectory)/../content/native</Groth16NativeLibDirectory>
+    </PropertyGroup>
+
+    <Target Name="Groth16CopyNativeLibs" AfterTargets="Build">
+        <ItemGroup>
+            <Groth16NativeLibs Include="$(Groth16NativeLibDirectory)/**/*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Groth16NativeLibs)" DestinationFolder="$(OutputPath)/native/%(RecursiveDir)" />
+    </Target>
+
+</Project>
