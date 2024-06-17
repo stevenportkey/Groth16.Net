@@ -11,4 +11,11 @@
         <Copy SourceFiles="@(Groth16NativeLibs)" DestinationFolder="$(OutputPath)/native/%(RecursiveDir)" />
     </Target>
 
+    <Target Name="Groth16CopyNativeLibsToPublish" AfterTargets="Publish">
+        <ItemGroup>
+            <Groth16NativeLibs Include="$(Groth16NativeLibDirectory)/**/*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Groth16NativeLibs)" DestinationFolder="$(PublishDir)/native/%(RecursiveDir)" />
+    </Target>
+
 </Project>
