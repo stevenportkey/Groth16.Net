@@ -74,6 +74,27 @@ public class Groth16Tests
         Assert.True(verified);
     }
 
+
+    [Fact]
+    public void Test_ProvingFails_Invalid_Input()
+    {
+        var wasmPath = "../../../data-files/multiplier2.wasm";
+        var r1csPath = "../../../data-files/multiplier2.r1cs";
+        var zkeyPath = "../../../data-files/multiplier2_0001.zkey";
+        using var prover = Prover.Create(wasmPath, r1csPath, zkeyPath);
+        var invalidInput = new Dictionary<string, IList<string>>()
+        {
+            {
+                "a", new List<string>
+                {
+                    "ab"
+                }
+            }
+        };
+
+        Assert.Throws<ArgumentException>(() => prover.ProveBn254(invalidInput));
+    }
+
     [Fact]
     public void Test_ContextCreateFails_InvalidPath()
     {

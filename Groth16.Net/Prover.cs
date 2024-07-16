@@ -80,10 +80,14 @@ namespace Groth16.Net
 
         public string ProveBn254(IDictionary<string, IList<string>> input)
         {
+            if (!input.Values.SelectMany(x => x).All(IsDecimal))
+            {
+                throw new ArgumentException("All input values must be decimal numbers.");
+            }
+
             var buffer = new byte[1048576]; // 1MB
 
             var inputString = input.ToJsonString();
-            Console.WriteLine(inputString);
             Span<byte> inputInBytes = Encoding.ASCII.GetBytes(inputString);
             Span<byte> output = buffer;
             var returnedBytes = 0;
@@ -110,6 +114,17 @@ namespace Groth16.Net
             if (_ctx == IntPtr.Zero) return;
             free_context_bn254.Value(_ctx);
             _ctx = IntPtr.Zero;
+        }
+
+        private static bool IsDecimal(string value)
+        {
+            foreach (var c in value)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
         }
     }
 }
