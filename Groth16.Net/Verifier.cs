@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -30,6 +31,18 @@ namespace Groth16.Net
 
         public static bool VerifyBn254(string verifyingKey, IList<string> publicInputs, RapidSnarkProof proof)
         {
+            if (!verifyingKey.IsHex())
+            {
+                throw new ArgumentException("The verifying key must be in hex format.");
+            }
+
+            if (publicInputs.Any(x => !x.IsDecimal()))
+            {
+                throw new ArgumentException("The public inputs must be in decimal format.");
+            }
+
+            proof.Validate();
+
             var provingOutput = new InternalProvingOutput(publicInputs, proof).ToJsonString();
             Span<byte> inputInBytes = Encoding.ASCII.GetBytes(verifyingKey);
             Span<byte> provingOutputInBytes = Encoding.ASCII.GetBytes(provingOutput);

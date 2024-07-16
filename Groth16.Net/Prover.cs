@@ -75,12 +75,12 @@ namespace Groth16.Net
 
             var charArray = Encoding.UTF8.GetChars(buf);
 
-            return new string(charArray);
+            return new string(charArray).Trim('\0');
         }
 
         public string ProveBn254(IDictionary<string, IList<string>> input)
         {
-            if (!input.Values.SelectMany(x => x).All(IsDecimal))
+            if (input.Values.SelectMany(x => x).Any(s => !s.IsDecimal()))
             {
                 throw new ArgumentException("All input values must be decimal numbers.");
             }
@@ -114,17 +114,6 @@ namespace Groth16.Net
             if (_ctx == IntPtr.Zero) return;
             free_context_bn254.Value(_ctx);
             _ctx = IntPtr.Zero;
-        }
-
-        private static bool IsDecimal(string value)
-        {
-            foreach (var c in value)
-            {
-                if (c < '0' || c > '9')
-                    return false;
-            }
-
-            return true;
         }
     }
 }

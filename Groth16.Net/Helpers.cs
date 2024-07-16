@@ -22,5 +22,29 @@ namespace Groth16.Net
         {
             return "[" + string.Join(",", values.Select(x => x.ToJsonString())) + "]";
         }
+
+        internal static bool IsDecimal(this string value)
+        {
+            foreach (var c in value)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+
+            return true;
+        }
+
+        internal static bool IsHex(this string value)
+        {
+            foreach (var c in value.ToLower())
+            {
+                var isHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+
+                if (!isHex)
+                    return false;
+            }
+
+            return true;
+        }
     }
 }
