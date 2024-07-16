@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -8,8 +9,19 @@ namespace Groth16.Net
 {
     public unsafe class Prover : Groth16Base, IDisposable
     {
+        private static void AssertFileExists(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"The file {path} does not exist.");
+            }
+        }
+
         public static Prover Create(string wasmPath, string r1csPath, string zkeyPath)
         {
+            AssertFileExists(wasmPath);
+            AssertFileExists(r1csPath);
+            AssertFileExists(zkeyPath);
             var ctx = LoadContextBn2546(wasmPath, r1csPath, zkeyPath);
             var prover = new Prover();
             prover._ctx = ctx;
@@ -95,11 +107,9 @@ namespace Groth16.Net
 
         public void Dispose()
         {
-            if (_ctx != IntPtr.Zero)
-            {
-                free_context_bn254.Value(_ctx);
-                _ctx = IntPtr.Zero;
-            }
+            if (_ctx == IntPtr.Zero) return;
+            free_context_bn254.Value(_ctx);
+            _ctx = IntPtr.Zero;
         }
     }
 }

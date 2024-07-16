@@ -74,6 +74,15 @@ public class Groth16Tests
         Assert.True(verified);
     }
 
+    [Fact]
+    public void Test_ContextCreateFails_InvalidPath()
+    {
+        var wasmPath = "/ThisIsAnInvalidFile.wasm";
+        var r1csPath = "/ThisIsAnInvalidFile.r1cs";
+        var zkeyPath = "/ThisIsAnInvalidFile_0001.zkey";
+        Assert.Throws<FileNotFoundException>(() => Prover.Create(wasmPath, r1csPath, zkeyPath));
+    }
+
     private static ProvingOutput ParseProvingOutput(string provingOutput)
     {
         var provingOutputObj = JsonConvert.DeserializeObject<ProvingOutput>(provingOutput);
