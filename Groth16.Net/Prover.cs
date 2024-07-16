@@ -7,6 +7,13 @@ using System.Text;
 
 namespace Groth16.Net
 {
+    public class ProvingFailedException : Exception
+    {
+        public ProvingFailedException(string message) : base(message)
+        {
+        }
+    }
+
     public unsafe class Prover : Groth16Base, IDisposable
     {
         private static void AssertFileExists(string path)
@@ -17,6 +24,13 @@ namespace Groth16.Net
             }
         }
 
+        /// <summary>
+        /// Creates a <see cref="Prover"/> by loading the context from the given paths.
+        /// </summary>
+        /// <param name="wasmPath">The `.wasm` file produced by compiling a circom ciruit.</param>
+        /// <param name="r1csPath">The `.r1cs` file produced by compiling a circom ciruit.</param>
+        /// <param name="zkeyPath">The `.zkey` file created from a Groth16 trusted setup for the circuit.</param>
+        /// <returns>The Prover instance.</returns>
         public static Prover Create(string wasmPath, string r1csPath, string zkeyPath)
         {
             AssertFileExists(wasmPath);
@@ -65,6 +79,10 @@ namespace Groth16.Net
             return ctx;
         }
 
+        /// <summary>
+        /// Exports the verifying key for the circuit.
+        /// </summary>
+        /// <returns>The hex representation of the serialized verifying key.</returns>
         public string ExportVerifyingKeyBn254()
         {
             var buf = new byte[verifying_key_size_bn254.Value(_ctx) + 1];
@@ -78,6 +96,13 @@ namespace Groth16.Net
             return new string(charArray).Trim('\0');
         }
 
+        /// <summary>
+        /// Proves the Bn254.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>A string representation of the proof.</returns>
+        /// <exception cref="ArgumentException">Thrown when any value in the input dictionary is not a decimal number.</exception>
+        /// <exception cref="ProvingFailedException">Thrown when the prove_bn254 function returns a negative value.</exception>
         public string ProveBn254(IDictionary<string, IList<string>> input)
         {
             if (input.Values.SelectMany(x => x).Any(s => !s.IsDecimal()))
@@ -98,12 +123,19 @@ namespace Groth16.Net
                 returnedBytes = prove_bn254.Value(_ctx, inputPtr, buffPtr, buffer.Length);
             }
 
-            if (returnedBytes < 0) throw new Exception($"failed with code {returnedBytes}");
+            if (returnedBytes < 0)
+            {
+                throw new ProvingFailedException($"failed with code {returnedBytes}");
+            }
 
             var charArray = Encoding.UTF8.GetChars(buffer.TakeWhile(v => v != 0).ToArray());
             return new string(charArray);
         }
 
+        /// <summary>
+        /// Gets the verifying key size.
+        /// </summary>
+        /// <returns>The verifying key size.</returns>
         public int VerifyingKeySizeBn254()
         {
             return verifying_key_size_bn254.Value(_ctx);

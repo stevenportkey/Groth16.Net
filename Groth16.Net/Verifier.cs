@@ -29,6 +29,14 @@ namespace Groth16.Net
         static readonly Lazy<verify_bn254> verify_bn254
             = LazyDelegate<verify_bn254>(nameof(verify_bn254));
 
+        /// <summary>
+        /// Verifies the Groth16 proof.
+        /// </summary>
+        /// <param name="verifyingKey">The verifying key in hex format.</param>
+        /// <param name="publicInputs">The public inputs in decimal format.</param>
+        /// <param name="proof">The <see cref="RapidSnarkProof"/> to be verified.</param>
+        /// <returns>A boolean indicating whether the proof is valid.</returns>
+        /// <exception cref="ArgumentException">Thrown when the verifying key is not in hex format or the public inputs are not in decimal format.</exception>
         public static bool VerifyBn254(string verifyingKey, IList<string> publicInputs, RapidSnarkProof proof)
         {
             if (!verifyingKey.IsHex())
