@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Groth16.Net
 {
-    public unsafe delegate int groth16_verify_bn254(byte* vk, byte* proving_output);
+    public unsafe delegate int verify_bn254(byte* vk, byte* proving_output);
 
     public unsafe delegate IntPtr load_context_bn254(byte* wasm_path, byte* r1cs_path, byte* zkey_path);
 

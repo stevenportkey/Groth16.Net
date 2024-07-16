@@ -27,7 +27,7 @@ for index in "${!platforms[@]}"
 do
     echo "Downloading: ${platforms[index]}"
     # Define the URL
-    url="https://github.com/stevenportkey/go-groth16/releases/download/${LIB_VERSION}/libgroth16-${platforms[index]}-${LIB_VERSION}.zip"
+    url="https://github.com/stevenportkey/libgroth16/releases/download/${LIB_VERSION}/libgroth16-${platforms[index]}-${LIB_VERSION}.zip"
 
     # Define the target directory relative to the script directory
     dir="$script_dir/../Groth16.Net/native/${subfolders[index]}"

@@ -25,8 +25,8 @@ namespace Groth16.Net
 
     public unsafe class Verifier : Groth16Base
     {
-        static readonly Lazy<groth16_verify_bn254> groth16_verify_bn254
-            = LazyDelegate<groth16_verify_bn254>(nameof(groth16_verify_bn254));
+        static readonly Lazy<verify_bn254> verify_bn254
+            = LazyDelegate<verify_bn254>(nameof(verify_bn254));
 
         public static bool VerifyBn254(string verifyingKey, IList<string> publicInputs, RapidSnarkProof proof)
         {
@@ -38,7 +38,7 @@ namespace Groth16.Net
             fixed (byte* inputPtr = &MemoryMarshal.GetReference(inputInBytes),
                    provingOutputPtr = &MemoryMarshal.GetReference(provingOutputInBytes))
             {
-                verified = groth16_verify_bn254.Value(inputPtr, provingOutputPtr);
+                verified = verify_bn254.Value(inputPtr, provingOutputPtr);
             }
 
             return verified == 1;
