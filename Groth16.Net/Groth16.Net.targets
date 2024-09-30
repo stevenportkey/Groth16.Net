@@ -1,5 +1,15 @@
 <Project>
 
+    <ItemGroup>
+        <Content Include="$(MSBuildThisFileDirectory)..\content\**\native\**\*groth16.*">
+            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <Visible>true</Visible>
+            <Pack>false</Pack>
+        </Content>
+    </ItemGroup>
+
     <PropertyGroup>
         <Groth16NativeLibDirectory>$(MSBuildThisFileDirectory)/../content/native</Groth16NativeLibDirectory>
     </PropertyGroup>
